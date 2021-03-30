@@ -45,10 +45,12 @@ class FIFOActuatorTest {
 
     @Test
     fun testTheOldestOneIsRemoved() {
-        (0 until maxSize+1).forEach { i ->
+        (0 until maxSize).forEach { i ->
             actuator.add(Process(i, Priority.LOW), timestamp++, container, maxSize)
         }
-        val oldestProcessTimestamp = 1L
+        val oldestProcessTimestamp = container.map { it.first }.minOrNull()!! // the first process is the oldest one
+        val newProcess = Process(maxSize, Priority.LOW)
+        actuator.add(newProcess, timestamp++, container, maxSize)
         assert(!container.map { it.first }.contains(oldestProcessTimestamp)) {
             "expected: ${container.map { it.first }}.contains($oldestProcessTimestamp) == false; got: true"
         }
